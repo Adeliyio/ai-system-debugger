@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.core.config import settings
 from backend.storage.database import close_db
 from backend.storage.cache import close_redis
+from backend.api import traces_router, analysis_router, healing_router, metrics_router
 
 
 @asynccontextmanager
@@ -31,6 +32,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# Register API routers
+app.include_router(traces_router)
+app.include_router(analysis_router)
+app.include_router(healing_router)
+app.include_router(metrics_router)
 
 
 @app.get("/health")
