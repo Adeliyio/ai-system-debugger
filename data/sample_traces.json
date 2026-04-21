@@ -1,0 +1,87 @@
+[
+  {
+    "session_id": "demo-session-001",
+    "prompt": "What are the key differences between REST and GraphQL APIs?",
+    "response": "REST uses fixed endpoints with HTTP methods (GET, POST, PUT, DELETE) where each endpoint returns a predetermined data structure. GraphQL provides a single endpoint with a query language that lets clients request exactly the data they need. REST can lead to over-fetching or under-fetching data, while GraphQL solves this by allowing precise field selection. REST is simpler to cache due to URL-based caching, whereas GraphQL requires more sophisticated caching strategies. REST has broader tooling support, but GraphQL offers better developer experience for complex data requirements.",
+    "model_used": "gpt-4o",
+    "context_documents": [
+      "REST (Representational State Transfer) is an architectural style for distributed systems. It uses standard HTTP methods and status codes.",
+      "GraphQL is a query language for APIs developed by Facebook. It provides a complete description of the data in your API and gives clients the power to ask for exactly what they need."
+    ],
+    "latency_ms": 1250.5,
+    "token_count_input": 45,
+    "token_count_output": 156,
+    "metadata": {
+      "source": "knowledge_base_qa",
+      "user_tier": "premium"
+    }
+  },
+  {
+    "session_id": "demo-session-002",
+    "prompt": "Explain how a transformer model processes input text step by step.",
+    "response": "I don't have access to that information.",
+    "model_used": "llama3.2",
+    "context_documents": [],
+    "latency_ms": 89.2,
+    "token_count_input": 52,
+    "token_count_output": 9,
+    "metadata": {
+      "source": "education_qa",
+      "user_tier": "free",
+      "expected_failure": true
+    }
+  },
+  {
+    "session_id": "demo-session-003",
+    "prompt": "Based on the provided financial report, what was the company's revenue growth in Q3 2025?",
+    "response": "According to the financial report, the company achieved a revenue growth of 47% in Q3 2025, reaching $2.3 billion compared to $1.56 billion in Q3 2024. This growth was primarily driven by expansion in the cloud services division which grew 62% year-over-year.",
+    "model_used": "gpt-4o",
+    "context_documents": [
+      "Q3 2025 Financial Highlights: Total revenue reached $2.3B, up 47% YoY. Cloud services revenue grew 62% to $1.4B. Operating margin expanded to 28% from 24% in Q3 2024.",
+      "The company's Q3 2024 total revenue was $1.56B with cloud services contributing $864M."
+    ],
+    "latency_ms": 1890.3,
+    "token_count_input": 128,
+    "token_count_output": 87,
+    "metadata": {
+      "source": "financial_analysis",
+      "user_tier": "enterprise"
+    }
+  },
+  {
+    "session_id": "demo-session-004",
+    "prompt": "What medications interact with warfarin?",
+    "response": "Warfarin interacts with many medications. Common interactions include aspirin (increases bleeding risk), NSAIDs like ibuprofen (increases bleeding risk), certain antibiotics like metronidazole and fluconazole (increase warfarin effect), and vitamin K supplements (decrease warfarin effect). St. John's Wort can decrease warfarin's effectiveness. Acetaminophen in high doses may also enhance warfarin's anticoagulant effect. Always consult a healthcare provider before combining any medication with warfarin.",
+    "model_used": "gpt-4o",
+    "context_documents": [
+      "Warfarin is an anticoagulant medication. It has a narrow therapeutic index and numerous drug interactions.",
+      "Common warfarin interactions: NSAIDs increase bleeding risk. Certain antibiotics alter warfarin metabolism. Vitamin K antagonizes warfarin's mechanism of action."
+    ],
+    "latency_ms": 1456.7,
+    "token_count_input": 38,
+    "token_count_output": 112,
+    "metadata": {
+      "source": "medical_qa",
+      "user_tier": "premium",
+      "requires_human_review": true
+    }
+  },
+  {
+    "session_id": "demo-session-005",
+    "prompt": "Summarize the key findings from the latest climate report.",
+    "response": "The latest climate report found that global temperatures have risen by 1.2 degrees Celsius since pre-industrial times. Arctic ice is melting at an accelerated rate, with summer ice coverage declining 13% per decade. Sea levels have risen 3.6mm per year since 2006, double the rate from 1993-2006. The report projects that without significant emission reductions, temperatures could rise 2.7°C by 2100. Key recommendations include rapid decarbonization of energy systems, protection of carbon sinks, and adaptation measures for vulnerable regions.",
+    "model_used": "gpt-4o",
+    "context_documents": [
+      "The report found that if we achieve net zero by 2050, the temperature increase could be limited to 1.5°C."
+    ],
+    "latency_ms": 2100.8,
+    "token_count_input": 42,
+    "token_count_output": 134,
+    "metadata": {
+      "source": "research_summary",
+      "user_tier": "premium",
+      "expected_failure": true,
+      "failure_reason": "response contains specific numbers not found in context"
+    }
+  }
+]

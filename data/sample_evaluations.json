@@ -1,0 +1,73 @@
+[
+  {
+    "trace_session": "demo-session-001",
+    "description": "Well-grounded REST vs GraphQL comparison",
+    "expected_outcome": "pass",
+    "verdicts": {
+      "llm_judge": {"passed": true, "score": 0.92, "reasoning": "Accurate, comprehensive comparison covering key differences"},
+      "embedding_similarity": {"passed": true, "score": 0.87, "reasoning": "High relevance to prompt and context"},
+      "rule_based": {"passed": true, "score": 1.0, "reasoning": "All rule checks passed"}
+    },
+    "overall_score": 0.92,
+    "failure_detected": false
+  },
+  {
+    "trace_session": "demo-session-002",
+    "description": "Refusal response with no context — should fail",
+    "expected_outcome": "fail",
+    "verdicts": {
+      "llm_judge": {"passed": false, "score": 0.1, "reasoning": "Response is a refusal that doesn't address the question"},
+      "embedding_similarity": {"passed": false, "score": 0.15, "reasoning": "Extremely low similarity between prompt and response"},
+      "rule_based": {"passed": false, "score": 0.2, "reasoning": "Response is too short; refusal pattern detected"}
+    },
+    "overall_score": 0.13,
+    "failure_detected": true,
+    "expected_severity": "critical",
+    "expected_rca": {
+      "primary_source": "retrieval",
+      "reasoning": "No context documents were provided and the model refused to answer"
+    }
+  },
+  {
+    "trace_session": "demo-session-003",
+    "description": "Accurate financial analysis with supporting context",
+    "expected_outcome": "pass",
+    "verdicts": {
+      "llm_judge": {"passed": true, "score": 0.95, "reasoning": "Numbers match the provided financial report exactly"},
+      "embedding_similarity": {"passed": true, "score": 0.91, "reasoning": "Strong grounding in context documents"},
+      "rule_based": {"passed": true, "score": 1.0, "reasoning": "All rule checks passed"}
+    },
+    "overall_score": 0.95,
+    "failure_detected": false
+  },
+  {
+    "trace_session": "demo-session-004",
+    "description": "Medical information with partial context — borderline",
+    "expected_outcome": "pass",
+    "verdicts": {
+      "llm_judge": {"passed": true, "score": 0.78, "reasoning": "Response is accurate but includes details beyond provided context"},
+      "embedding_similarity": {"passed": true, "score": 0.72, "reasoning": "Moderate grounding in context"},
+      "rule_based": {"passed": true, "score": 0.8, "reasoning": "Some numeric claims not found in context"}
+    },
+    "overall_score": 0.77,
+    "failure_detected": false,
+    "notes": "Borderline case — response extends beyond context but is factually accurate"
+  },
+  {
+    "trace_session": "demo-session-005",
+    "description": "Climate summary with hallucinated statistics — should fail",
+    "expected_outcome": "fail",
+    "verdicts": {
+      "llm_judge": {"passed": false, "score": 0.35, "reasoning": "Response contains specific statistics (1.2°C, 13% per decade, 3.6mm/year) not found in the provided context"},
+      "embedding_similarity": {"passed": true, "score": 0.68, "reasoning": "Topically relevant but not well grounded"},
+      "rule_based": {"passed": false, "score": 0.6, "reasoning": "Multiple numeric claims not supported by context documents"}
+    },
+    "overall_score": 0.47,
+    "failure_detected": true,
+    "expected_severity": "medium",
+    "expected_rca": {
+      "primary_source": "context",
+      "reasoning": "Insufficient context provided — model filled gaps with potentially hallucinated data"
+    }
+  }
+]

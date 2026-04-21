@@ -1,0 +1,81 @@
+[
+  {
+    "scenario": "Retrieval failure — no context provided",
+    "trace_session": "demo-session-002",
+    "rca": {
+      "primary_source": "retrieval",
+      "findings": [
+        {
+          "source": "retrieval",
+          "confidence": 0.92,
+          "evidence": "Zero context documents were provided. The model refused to answer without supporting information.",
+          "suggested_action": "Ensure retrieval pipeline returns relevant documents before inference"
+        }
+      ]
+    },
+    "healing": {
+      "strategy": "retrieval_correction",
+      "expected_improvement": "Model should produce a substantive response when relevant transformer architecture documents are retrieved",
+      "repair_steps": [
+        "Reformulate query to: 'transformer model architecture input processing steps'",
+        "Retrieve top-k documents from knowledge base",
+        "Re-run inference with enriched context"
+      ]
+    }
+  },
+  {
+    "scenario": "Context insufficiency — hallucinated statistics",
+    "trace_session": "demo-session-005",
+    "rca": {
+      "primary_source": "context",
+      "findings": [
+        {
+          "source": "context",
+          "confidence": 0.78,
+          "evidence": "Only one brief context document was provided. The model generated specific numerical claims (1.2°C, 13%, 3.6mm/year) not present in context.",
+          "suggested_action": "Provide comprehensive climate report data or instruct model to only cite provided sources"
+        },
+        {
+          "source": "prompt",
+          "confidence": 0.45,
+          "evidence": "Prompt asks for 'key findings' without constraining the model to only use provided context.",
+          "suggested_action": "Add instruction: 'Based only on the provided documents, summarize...'"
+        }
+      ]
+    },
+    "healing": {
+      "strategy": "context_enrichment",
+      "expected_improvement": "Response should only contain claims supported by the provided context",
+      "repair_steps": [
+        "Identify specific claims in response that lack context support",
+        "Enrich context with additional climate report sections",
+        "Re-prompt with explicit grounding instructions",
+        "Verify all numeric claims against context documents"
+      ]
+    }
+  },
+  {
+    "scenario": "Model capability limitation — complex reasoning task on lightweight model",
+    "trace_session": "demo-session-002",
+    "rca": {
+      "primary_source": "model",
+      "findings": [
+        {
+          "source": "model",
+          "confidence": 0.75,
+          "evidence": "Task requires step-by-step technical explanation of transformer architecture. Routed to llama3.2 which may lack sufficient capability for this complexity level.",
+          "suggested_action": "Reroute to GPT-4o for complex technical explanations"
+        }
+      ]
+    },
+    "healing": {
+      "strategy": "model_reroute",
+      "expected_improvement": "GPT-4o should provide a detailed, accurate step-by-step explanation",
+      "repair_steps": [
+        "Force routing to GPT-4o regardless of complexity score",
+        "Re-run inference with the higher-capability model",
+        "Verify response quality meets evaluation threshold"
+      ]
+    }
+  }
+]
