@@ -44,6 +44,8 @@ class SeverityLevel(str, Enum):
 # --- Trace Models ---
 
 class TraceCreate(BaseModel):
+    model_config = {"protected_namespaces": ()}
+
     session_id: str = Field(..., description="Unique session identifier")
     prompt: str = Field(..., description="Input prompt sent to the LLM")
     response: str = Field(..., description="LLM-generated response")
@@ -56,6 +58,8 @@ class TraceCreate(BaseModel):
 
 
 class TraceResponse(BaseModel):
+    model_config = {"from_attributes": True, "protected_namespaces": ()}
+
     id: str
     session_id: str
     prompt: str
@@ -68,8 +72,6 @@ class TraceResponse(BaseModel):
     status: TraceStatus
     metadata: dict
     created_at: datetime
-
-    model_config = {"from_attributes": True}
 
 
 # --- Evaluation Models ---
@@ -186,6 +188,8 @@ class MetricsQuery(BaseModel):
 
 
 class PipelineMetrics(BaseModel):
+    model_config = {"protected_namespaces": ()}
+
     total_traces: int
     failure_rate: float
     mean_latency_ms: float
