@@ -5,6 +5,7 @@ import Traces from './pages/Traces';
 import Healing from './pages/Healing';
 import EvaluatorHealth from './pages/EvaluatorHealth';
 import Drift from './pages/Drift';
+import Admin from './pages/Admin';
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
           <Route path="/healing" element={<Healing />} />
           <Route path="/evaluator-health" element={<EvaluatorHealth />} />
           <Route path="/drift" element={<Drift />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </main>
     </div>

@@ -5,11 +5,13 @@ import {
   Wrench,
   Activity,
   Heart,
+  Terminal,
 } from 'lucide-react';
 import clsx from 'clsx';
 
 const links = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/admin', label: 'Admin Console', icon: Terminal },
   { to: '/traces', label: 'Traces', icon: ListTree },
   { to: '/healing', label: 'Healing', icon: Wrench },
   { to: '/evaluator-health', label: 'Evaluators', icon: Heart },
