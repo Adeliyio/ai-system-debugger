@@ -45,6 +45,7 @@ memory/
 node_modules/
 frontend/node_modules/
 frontend/build/
+frontend/dist/
 frontend/.env
 
 # Database
