@@ -6,12 +6,33 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 
 from backend.main import app
-from backend.models.schemas import TraceCreate, TraceStatus
+from backend.core.dependencies import (
+    get_cache_service,
+    get_model_router,
+)
+from backend.models.schemas import TraceCreate
+from backend.storage.cache import CacheService, get_redis
 from backend.storage.database import get_db
-from backend.storage.cache import get_redis, CacheService
 
 
 # --- Mock database session ---
+
+def _make_execute_result(**kwargs):
+    """Build a MagicMock that acts like an awaited SQLAlchemy result."""
+    result = MagicMock()
+    result.scalar_one_or_none.return_value = kwargs.get("scalar", None)
+    result.scalars.return_value = MagicMock(all=MagicMock(return_value=kwargs.get("rows", [])))
+    result.one.return_value = MagicMock(
+        total=kwargs.get("total", 0),
+        failures=kwargs.get("failures", 0),
+        successes=kwargs.get("successes", 0),
+        mean=kwargs.get("mean", 0.0),
+        p95=kwargs.get("p95", 0.0),
+        p99=kwargs.get("p99", 0.0),
+    )
+    result.all.return_value = kwargs.get("rows", [])
+    return result
+
 
 @pytest.fixture
 def mock_db():
@@ -22,7 +43,8 @@ def mock_db():
     session.commit = AsyncMock()
     session.rollback = AsyncMock()
     session.get = AsyncMock(return_value=None)
-    session.execute = AsyncMock()
+    # Return a proper non-coroutine result so .scalar_one_or_none() etc. work
+    session.execute = AsyncMock(return_value=_make_execute_result())
     return session
 
 
@@ -45,7 +67,13 @@ def mock_cache():
 def mock_router():
     """Provides a mock model router."""
     router = AsyncMock()
-    router.route_and_call = AsyncMock(return_value=('{"passed": true, "score": 0.85, "reasoning": "Good response"}', "gpt-4o"))
+    router.openai_client = MagicMock()
+    router.route_and_call = AsyncMock(
+        return_value=(
+            '{"passed": true, "score": 0.85, "reasoning": "Good response", "failure_type": "none"}',
+            "gpt-4o",
+        )
+    )
     router.call_openai = AsyncMock(return_value="Repaired response text")
     router.call_local = AsyncMock(return_value="Local model response")
     router.select_model = MagicMock(return_value="gpt-4o")
@@ -73,7 +101,6 @@ def sample_trace_create():
 
 @pytest.fixture
 def sample_trace_record():
-    """Provides a mock trace database record."""
     record = MagicMock()
     record.id = uuid.uuid4()
     record.session_id = "test-session-001"
@@ -81,9 +108,18 @@ def sample_trace_record():
     record.response = "The capital of France is Paris."
     record.model_used = "gpt-4o"
     record.context_documents = ["France is a country in Western Europe. Its capital is Paris."]
+    record.retrieved_docs = []
     record.latency_ms = 245.5
+    record.latency_breakdown = {}
     record.token_count_input = 12
     record.token_count_output = 8
+    record.model_cost_usd = 0.0
+    record.evaluation_cost_usd = 0.0
+    record.total_cost_usd = 0.0
+    record.task_type = None
+    record.complexity_score = None
+    record.routing_fallback = False
+    record.risk_tier = "general"
     record.status = "pending"
     record.metadata_ = {"source": "test"}
     record.created_at = datetime.now(timezone.utc)
@@ -92,27 +128,27 @@ def sample_trace_record():
 
 @pytest.fixture
 def sample_evaluation_record():
-    """Provides a mock evaluation database record."""
     record = MagicMock()
     record.id = uuid.uuid4()
     record.trace_id = uuid.uuid4()
     record.passed = False
     record.overall_score = 0.35
     record.verdicts = [
-        {"evaluator_type": "llm_judge", "passed": False, "score": 0.3, "reasoning": "Hallucinated facts"},
-        {"evaluator_type": "embedding_similarity", "passed": False, "score": 0.4, "reasoning": "Low similarity"},
-        {"evaluator_type": "rule_based", "passed": True, "score": 0.8, "reasoning": "All rule checks passed"},
+        {"evaluator_type": "llm_judge", "passed": False, "score": 0.3, "reasoning": "Hallucinated facts", "failure_type": "hallucination"},
+        {"evaluator_type": "embedding_similarity", "passed": False, "score": 0.4, "reasoning": "Low similarity", "failure_type": "context_loss"},
+        {"evaluator_type": "rule_based", "passed": True, "score": 0.8, "reasoning": "All rule checks passed", "failure_type": "none"},
     ]
     record.agreement_count = 2
     record.failure_detected = True
+    record.failure_type = "hallucination"
     record.severity = "high"
+    record.low_confidence = True
     record.created_at = datetime.now(timezone.utc)
     return record
 
 
 @pytest.fixture
 def sample_rca_record():
-    """Provides a mock RCA database record."""
     record = MagicMock()
     record.id = uuid.uuid4()
     record.trace_id = uuid.uuid4()
@@ -131,25 +167,34 @@ def sample_rca_record():
     return record
 
 
-# --- Test client ---
+# --- Test client with all dependencies overridden ---
 
 @pytest.fixture
-def override_deps(mock_db, mock_cache):
-    """Override FastAPI dependencies for testing."""
+def override_deps(mock_db, mock_cache, mock_router):
+    """Override every external dependency so tests run hermetically."""
+
     async def _mock_get_db():
         yield mock_db
 
     async def _mock_get_redis():
         return AsyncMock()
 
+    async def _mock_get_cache_service():
+        return mock_cache
+
+    def _mock_get_model_router():
+        return mock_router
+
     app.dependency_overrides[get_db] = _mock_get_db
+    app.dependency_overrides[get_redis] = _mock_get_redis
+    app.dependency_overrides[get_cache_service] = _mock_get_cache_service
+    app.dependency_overrides[get_model_router] = _mock_get_model_router
     yield
     app.dependency_overrides.clear()
 
 
 @pytest.fixture
 async def client(override_deps):
-    """Provides an async test client for the FastAPI app."""
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac

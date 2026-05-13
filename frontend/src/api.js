@@ -32,8 +32,27 @@ export const api = {
     const query = new URLSearchParams(params).toString();
     return request(`/metrics${query ? `?${query}` : ''}`);
   },
+  getCostMetrics: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/metrics/cost${query ? `?${query}` : ''}`);
+  },
+  getLatencyMetrics: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/metrics/latency${query ? `?${query}` : ''}`);
+  },
+  getStructuralFailures: () => request('/metrics/structural-failures'),
   getEvaluatorHealth: () => request('/evaluator-health'),
+  recalibrateEvaluators: () =>
+    request('/evaluator-health/recalibrate', { method: 'POST' }),
   getDrift: () => request('/drift'),
+
+  // Review
+  getReviewQueue: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/review/queue${query ? `?${query}` : ''}`);
+  },
+  labelReviewItem: (id, payload) =>
+    request(`/review/${id}/label`, { method: 'POST', body: JSON.stringify(payload) }),
 
   // Health
   getHealth: () => request('/health'),

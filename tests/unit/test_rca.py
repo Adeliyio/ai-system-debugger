@@ -152,5 +152,8 @@ class TestRCAFullPipeline:
         service = RCAService(mock_db, mock_router)
         with pytest.raises(ValueError, match="Trace"):
             await service.analyze(
-                RCARequest(trace_id="missing", evaluation_id="missing")
+                RCARequest(
+                    trace_id="00000000-0000-0000-0000-000000000000",
+                    evaluation_id="00000000-0000-0000-0000-000000000001",
+                )
             )

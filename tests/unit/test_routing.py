@@ -80,23 +80,37 @@ class TestModelCalls:
 
     @pytest.mark.asyncio
     async def test_openai_fallback_on_error(self):
-        """When OpenAI fails, should fall back to local model."""
+        """When OpenAI fails, route_and_call should fall back to local model."""
+        self.router.openai_client = MagicMock()
         self.router.openai_client.chat.completions.create = AsyncMock(
             side_effect=Exception("API error")
         )
-        self.router.call_local = AsyncMock(return_value="fallback response")
+        # Patch _call_local_full to return a proper RoutingResult
+        from backend.services.routing.router import RoutingResult
+        fallback_result = RoutingResult(
+            content="fallback response", model_used="llama3.2",
+            task_type="evaluation", complexity_score=0.8, fallback=True,
+        )
+        self.router._call_local_full = AsyncMock(return_value=fallback_result)
 
-        result = await self.router.call_openai("test prompt")
-        assert result == "fallback response"
-        self.router.call_local.assert_called_once()
+        response, model = await self.router.route_and_call(
+            "analyze this", TaskType.evaluation,
+        )
+        assert response == "fallback response"
+        assert model == "llama3.2"
 
     @pytest.mark.asyncio
     async def test_route_and_call_returns_tuple(self):
         """route_and_call should return (response, model_used)."""
-        self.router.call_openai = AsyncMock(return_value="openai response")
+        from backend.services.routing.router import RoutingResult
+        openai_result = RoutingResult(
+            content="openai response", model_used="gpt-4o",
+            task_type="evaluation", complexity_score=0.8,
+        )
+        self.router._call_openai_full = AsyncMock(return_value=openai_result)
 
         response, model = await self.router.route_and_call(
-            "analyze this", TaskType.evaluation
+            "analyze this", TaskType.evaluation,
         )
         assert response == "openai response"
         assert model == "gpt-4o"

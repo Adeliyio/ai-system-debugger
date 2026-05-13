@@ -50,9 +50,20 @@ class TestHealingEndpoints:
         assert response.status_code == 422
 
     @pytest.mark.asyncio
-    async def test_compare_not_found_for_bad_trace(self, client):
+    async def test_compare_rejects_invalid_uuid(self, client):
         response = await client.post(
             "/compare",
             json={"trace_id": "bad-id", "healing_id": "bad-id"},
+        )
+        assert response.status_code == 400
+
+    @pytest.mark.asyncio
+    async def test_compare_not_found_for_missing_trace(self, client):
+        response = await client.post(
+            "/compare",
+            json={
+                "trace_id": "00000000-0000-0000-0000-000000000000",
+                "healing_id": "00000000-0000-0000-0000-000000000001",
+            },
         )
         assert response.status_code == 404

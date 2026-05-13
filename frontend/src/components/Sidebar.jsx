@@ -6,6 +6,9 @@ import {
   Activity,
   Heart,
   Terminal,
+  DollarSign,
+  Clock,
+  Users,
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -16,6 +19,9 @@ const links = [
   { to: '/healing', label: 'Healing', icon: Wrench },
   { to: '/evaluator-health', label: 'Evaluators', icon: Heart },
   { to: '/drift', label: 'Drift', icon: Activity },
+  { to: '/costs', label: 'Costs', icon: DollarSign },
+  { to: '/latency', label: 'Latency', icon: Clock },
+  { to: '/review', label: 'Review Queue', icon: Users },
 ];
 
 export default function Sidebar() {
@@ -28,7 +34,7 @@ export default function Sidebar() {
         <span className="font-semibold text-sm text-gray-100">System Debugger</span>
       </div>
 
-      <nav className="flex-1 py-4 px-3 space-y-1">
+      <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
         {links.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}

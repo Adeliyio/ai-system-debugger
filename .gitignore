@@ -56,5 +56,9 @@ frontend/.env
 *.log
 logs/
 
+# Persistent fix repository (FAISS index + records)
+data/fix_index.faiss
+data/fix_records.json
+
 # Docker
 .docker/

@@ -9,8 +9,21 @@
       "GraphQL is a query language for APIs developed by Facebook. It provides a complete description of the data in your API and gives clients the power to ask for exactly what they need."
     ],
     "latency_ms": 1250.5,
+    "latency_breakdown": {
+      "preprocessing_ms": 12.3,
+      "retrieval_ms": 185.2,
+      "generation_ms": 1020.0,
+      "evaluation_ms": 33.0
+    },
     "token_count_input": 45,
     "token_count_output": 156,
+    "cost": {
+      "input_tokens": 45,
+      "output_tokens": 156,
+      "model_cost_usd": 0.0026,
+      "evaluation_cost_usd": 0.001,
+      "total_cost_usd": 0.0036
+    },
     "metadata": {
       "source": "knowledge_base_qa",
       "user_tier": "premium"
@@ -23,8 +36,21 @@
     "model_used": "llama3.2",
     "context_documents": [],
     "latency_ms": 89.2,
+    "latency_breakdown": {
+      "preprocessing_ms": 5.0,
+      "retrieval_ms": 12.0,
+      "generation_ms": 68.2,
+      "evaluation_ms": 4.0
+    },
     "token_count_input": 52,
     "token_count_output": 9,
+    "cost": {
+      "input_tokens": 52,
+      "output_tokens": 9,
+      "model_cost_usd": 0.0,
+      "evaluation_cost_usd": 0.0,
+      "total_cost_usd": 0.0
+    },
     "metadata": {
       "source": "education_qa",
       "user_tier": "free",
@@ -41,8 +67,21 @@
       "The company's Q3 2024 total revenue was $1.56B with cloud services contributing $864M."
     ],
     "latency_ms": 1890.3,
+    "latency_breakdown": {
+      "preprocessing_ms": 18.0,
+      "retrieval_ms": 220.3,
+      "generation_ms": 1580.0,
+      "evaluation_ms": 72.0
+    },
     "token_count_input": 128,
     "token_count_output": 87,
+    "cost": {
+      "input_tokens": 128,
+      "output_tokens": 87,
+      "model_cost_usd": 0.0019,
+      "evaluation_cost_usd": 0.0008,
+      "total_cost_usd": 0.0027
+    },
     "metadata": {
       "source": "financial_analysis",
       "user_tier": "enterprise"
@@ -58,12 +97,26 @@
       "Common warfarin interactions: NSAIDs increase bleeding risk. Certain antibiotics alter warfarin metabolism. Vitamin K antagonizes warfarin's mechanism of action."
     ],
     "latency_ms": 1456.7,
+    "latency_breakdown": {
+      "preprocessing_ms": 15.0,
+      "retrieval_ms": 198.0,
+      "generation_ms": 1180.0,
+      "evaluation_ms": 63.7
+    },
     "token_count_input": 38,
     "token_count_output": 112,
+    "cost": {
+      "input_tokens": 38,
+      "output_tokens": 112,
+      "model_cost_usd": 0.0019,
+      "evaluation_cost_usd": 0.0006,
+      "total_cost_usd": 0.0025
+    },
     "metadata": {
       "source": "medical_qa",
       "user_tier": "premium",
-      "requires_human_review": true
+      "requires_human_review": true,
+      "risk_tier": "medical"
     }
   },
   {
@@ -75,13 +128,346 @@
       "The report found that if we achieve net zero by 2050, the temperature increase could be limited to 1.5°C."
     ],
     "latency_ms": 2100.8,
+    "latency_breakdown": {
+      "preprocessing_ms": 22.0,
+      "retrieval_ms": 310.0,
+      "generation_ms": 1680.8,
+      "evaluation_ms": 88.0
+    },
     "token_count_input": 42,
     "token_count_output": 134,
+    "cost": {
+      "input_tokens": 42,
+      "output_tokens": 134,
+      "model_cost_usd": 0.0022,
+      "evaluation_cost_usd": 0.0009,
+      "total_cost_usd": 0.0031
+    },
     "metadata": {
       "source": "research_summary",
       "user_tier": "premium",
       "expected_failure": true,
       "failure_reason": "response contains specific numbers not found in context"
+    }
+  },
+  {
+    "session_id": "demo-session-006",
+    "prompt": "What is the refund policy for annual enterprise subscriptions?",
+    "response": "Annual enterprise subscriptions come with a 30-day money-back guarantee. After the initial 30 days, refunds are prorated based on the remaining subscription period. Enterprise customers can request a refund by contacting their account manager or submitting a ticket through the support portal. Processing typically takes 5-10 business days.",
+    "model_used": "gpt-4o",
+    "context_documents": [
+      "Pricing FAQ: Monthly subscriptions can be cancelled at any time. No refund policy is mentioned for annual plans.",
+      "Enterprise Agreement Terms: Contact your account manager for billing inquiries."
+    ],
+    "latency_ms": 1340.0,
+    "latency_breakdown": {
+      "preprocessing_ms": 14.0,
+      "retrieval_ms": 195.0,
+      "generation_ms": 1060.0,
+      "evaluation_ms": 71.0
+    },
+    "token_count_input": 62,
+    "token_count_output": 98,
+    "cost": {
+      "input_tokens": 62,
+      "output_tokens": 98,
+      "model_cost_usd": 0.0018,
+      "evaluation_cost_usd": 0.0007,
+      "total_cost_usd": 0.0025
+    },
+    "metadata": {
+      "source": "customer_support",
+      "user_tier": "enterprise",
+      "expected_failure": true,
+      "failure_reason": "hallucinated refund details not in context documents"
+    }
+  },
+  {
+    "session_id": "demo-session-007",
+    "prompt": "Compare the performance characteristics of PostgreSQL vs MySQL for analytical workloads.",
+    "response": "PostgreSQL excels at analytical workloads due to its advanced query planner, support for parallel query execution, window functions, CTEs (Common Table Expressions), and rich indexing options including GIN and GiST. It handles complex joins and subqueries more efficiently. MySQL, while faster for simple read-heavy OLTP workloads, lacks native support for advanced analytical features like LATERAL joins and has limited parallel query capabilities. PostgreSQL also offers better JSON/JSONB support for semi-structured data analysis and materialized views for pre-computed aggregations.",
+    "model_used": "gpt-4o",
+    "context_documents": [
+      "PostgreSQL supports parallel query execution since version 9.6. It offers advanced indexing with GIN, GiST, BRIN, and SP-GiST index types.",
+      "MySQL is optimized for read-heavy workloads. InnoDB storage engine provides ACID compliance. MySQL 8.0 added window functions and CTEs.",
+      "Benchmark results show PostgreSQL outperforms MySQL by 2-3x on TPC-H analytical queries at scale."
+    ],
+    "latency_ms": 1780.0,
+    "latency_breakdown": {
+      "preprocessing_ms": 20.0,
+      "retrieval_ms": 245.0,
+      "generation_ms": 1430.0,
+      "evaluation_ms": 85.0
+    },
+    "token_count_input": 95,
+    "token_count_output": 142,
+    "cost": {
+      "input_tokens": 95,
+      "output_tokens": 142,
+      "model_cost_usd": 0.0026,
+      "evaluation_cost_usd": 0.001,
+      "total_cost_usd": 0.0036
+    },
+    "metadata": {
+      "source": "technical_comparison",
+      "user_tier": "premium"
+    }
+  },
+  {
+    "session_id": "demo-session-008",
+    "prompt": "What are the current interest rates for a 30-year fixed mortgage?",
+    "response": "Current 30-year fixed mortgage rates average around 6.8% as of early 2026. However, rates can vary significantly based on credit score, down payment amount, loan-to-value ratio, and lender. Borrowers with excellent credit (760+) may qualify for rates as low as 6.4%, while those with lower scores might see rates above 7.2%. It's advisable to shop multiple lenders and consider points to buy down the rate.",
+    "model_used": "gpt-4o",
+    "context_documents": [
+      "Mortgage rates are influenced by Federal Reserve policy, inflation expectations, and bond market conditions.",
+      "Consult a licensed mortgage professional for current rate quotes specific to your situation."
+    ],
+    "latency_ms": 1520.0,
+    "latency_breakdown": {
+      "preprocessing_ms": 16.0,
+      "retrieval_ms": 210.0,
+      "generation_ms": 1220.0,
+      "evaluation_ms": 74.0
+    },
+    "token_count_input": 48,
+    "token_count_output": 118,
+    "cost": {
+      "input_tokens": 48,
+      "output_tokens": 118,
+      "model_cost_usd": 0.002,
+      "evaluation_cost_usd": 0.0008,
+      "total_cost_usd": 0.0028
+    },
+    "metadata": {
+      "source": "financial_advisory",
+      "user_tier": "premium",
+      "risk_tier": "financial",
+      "expected_failure": true,
+      "failure_reason": "specific rate numbers not in context, financial risk tier"
+    }
+  },
+  {
+    "session_id": "demo-session-009",
+    "prompt": "Explain the difference between supervised and unsupervised learning with examples.",
+    "response": "Supervised learning uses labeled training data to learn a mapping from inputs to outputs. Examples include image classification (labeling images as cat/dog), spam detection (classifying emails), and house price prediction (regression from features to price). The model learns by comparing its predictions against known correct answers. Unsupervised learning finds patterns in unlabeled data without predefined outputs. Examples include customer segmentation (clustering), anomaly detection (finding unusual transactions), and dimensionality reduction (PCA for feature compression). The key distinction is whether the training data includes target labels.",
+    "model_used": "llama3.2",
+    "context_documents": [
+      "Machine learning is broadly divided into supervised learning (with labeled data), unsupervised learning (without labels), and reinforcement learning (learning from rewards).",
+      "Common supervised algorithms: linear regression, decision trees, neural networks. Common unsupervised: k-means, DBSCAN, autoencoders."
+    ],
+    "latency_ms": 420.0,
+    "latency_breakdown": {
+      "preprocessing_ms": 8.0,
+      "retrieval_ms": 95.0,
+      "generation_ms": 305.0,
+      "evaluation_ms": 12.0
+    },
+    "token_count_input": 68,
+    "token_count_output": 145,
+    "cost": {
+      "input_tokens": 68,
+      "output_tokens": 145,
+      "model_cost_usd": 0.0,
+      "evaluation_cost_usd": 0.0,
+      "total_cost_usd": 0.0
+    },
+    "task_type": "generation",
+    "complexity_score": 0.42,
+    "metadata": {
+      "source": "education_qa",
+      "user_tier": "free",
+      "routed_to_local": true
+    }
+  },
+  {
+    "session_id": "demo-session-010",
+    "prompt": "Based on the patient's lab results, what is the recommended next step?",
+    "response": "Based on the elevated TSH level (8.2 mIU/L) and low free T4 (0.6 ng/dL), the lab results suggest subclinical hypothyroidism progressing toward overt hypothyroidism. The recommended next step would be to start levothyroxine therapy at a low dose (25-50 mcg daily) and recheck thyroid function in 6-8 weeks. However, consider ruling out secondary causes such as pituitary dysfunction if the clinical picture warrants. A thyroid antibody panel (anti-TPO) would help confirm autoimmune thyroiditis as the underlying cause.",
+    "model_used": "gpt-4o",
+    "context_documents": [
+      "Patient lab results: TSH 8.2 mIU/L (normal 0.4-4.0), Free T4 0.6 ng/dL (normal 0.8-1.8).",
+      "Clinical guidelines: Subclinical hypothyroidism with TSH > 10 should be treated. TSH 5-10 may be observed or treated based on symptoms."
+    ],
+    "latency_ms": 1680.0,
+    "latency_breakdown": {
+      "preprocessing_ms": 18.0,
+      "retrieval_ms": 230.0,
+      "generation_ms": 1350.0,
+      "evaluation_ms": 82.0
+    },
+    "token_count_input": 85,
+    "token_count_output": 130,
+    "cost": {
+      "input_tokens": 85,
+      "output_tokens": 130,
+      "model_cost_usd": 0.0024,
+      "evaluation_cost_usd": 0.0009,
+      "total_cost_usd": 0.0033
+    },
+    "metadata": {
+      "source": "clinical_decision_support",
+      "user_tier": "enterprise",
+      "risk_tier": "medical",
+      "expected_failure": false,
+      "note": "response is grounded in context but risk tier should trigger manual review"
+    }
+  },
+  {
+    "session_id": "demo-session-011",
+    "prompt": "What is our company's vacation policy for new employees?",
+    "response": "New employees receive 15 days of paid time off (PTO) in their first year, accruing at 1.25 days per month starting from their hire date. After the first year, PTO increases to 20 days annually. Unused PTO can roll over up to a maximum of 5 days into the next calendar year. Employees must request time off at least 2 weeks in advance for periods longer than 3 consecutive days.",
+    "model_used": "gpt-4o",
+    "context_documents": [
+      "Employee Handbook Section 4.2: PTO accrual begins on the first day of employment.",
+      "Benefits Overview: Full-time employees are eligible for health insurance, 401(k) matching, and paid time off."
+    ],
+    "latency_ms": 1150.0,
+    "latency_breakdown": {
+      "preprocessing_ms": 11.0,
+      "retrieval_ms": 165.0,
+      "generation_ms": 910.0,
+      "evaluation_ms": 64.0
+    },
+    "token_count_input": 42,
+    "token_count_output": 105,
+    "cost": {
+      "input_tokens": 42,
+      "output_tokens": 105,
+      "model_cost_usd": 0.0018,
+      "evaluation_cost_usd": 0.0007,
+      "total_cost_usd": 0.0025
+    },
+    "metadata": {
+      "source": "hr_knowledge_base",
+      "user_tier": "internal",
+      "expected_failure": true,
+      "failure_reason": "specific PTO numbers (15 days, 20 days, rollover policy) not in retrieved context"
+    }
+  },
+  {
+    "session_id": "demo-session-012",
+    "prompt": "Translate the following legal clause into plain language: 'The indemnifying party shall hold harmless and defend the indemnified party against any claims arising from...'",
+    "response": "In plain language, this clause means: If someone sues or makes a claim against you because of something related to this agreement, the other party (the one providing the indemnification) is responsible for covering your legal costs and any damages. They essentially promise to protect you financially and legally from those claims. You wouldn't have to pay out of pocket for defense attorneys or settlements related to covered claims.",
+    "model_used": "gpt-4o",
+    "context_documents": [
+      "Indemnification clauses allocate risk between contracting parties. The indemnifying party assumes liability for specified claims or losses.",
+      "Hold harmless agreements prevent one party from holding the other liable for damages or losses."
+    ],
+    "latency_ms": 1420.0,
+    "latency_breakdown": {
+      "preprocessing_ms": 14.0,
+      "retrieval_ms": 188.0,
+      "generation_ms": 1140.0,
+      "evaluation_ms": 78.0
+    },
+    "token_count_input": 72,
+    "token_count_output": 108,
+    "cost": {
+      "input_tokens": 72,
+      "output_tokens": 108,
+      "model_cost_usd": 0.0020,
+      "evaluation_cost_usd": 0.0008,
+      "total_cost_usd": 0.0028
+    },
+    "metadata": {
+      "source": "legal_simplification",
+      "user_tier": "enterprise",
+      "risk_tier": "legal"
+    }
+  },
+  {
+    "session_id": "demo-session-013",
+    "prompt": "How do I configure Kubernetes horizontal pod autoscaling based on custom metrics?",
+    "response": "To configure HPA with custom metrics: 1) Install a metrics adapter (e.g., Prometheus Adapter or Datadog Cluster Agent) that exposes custom metrics via the custom.metrics.k8s.io API. 2) Define your HPA manifest with spec.metrics using type: Pods or type: Object with the custom metric name and target value. 3) Example YAML: apiVersion: autoscaling/v2, kind: HorizontalPodAutoscaler with metrics referencing your custom metric. 4) Verify with 'kubectl get hpa' and 'kubectl describe hpa <name>' to see scaling decisions. Key considerations: set appropriate stabilization windows to prevent flapping, and use behavior policies to control scale-up/scale-down rates.",
+    "model_used": "gpt-4o",
+    "context_documents": [
+      "Kubernetes HPA automatically scales pod replicas based on observed CPU utilization or custom metrics. It requires the metrics-server for CPU/memory metrics.",
+      "The autoscaling/v2 API supports multiple metric types: Resource, Pods, Object, and External. Custom metrics require a compatible metrics adapter.",
+      "Prometheus Adapter translates Prometheus queries into Kubernetes custom metrics API calls, enabling HPA to scale based on application-specific metrics."
+    ],
+    "latency_ms": 1920.0,
+    "latency_breakdown": {
+      "preprocessing_ms": 25.0,
+      "retrieval_ms": 280.0,
+      "generation_ms": 1520.0,
+      "evaluation_ms": 95.0
+    },
+    "token_count_input": 110,
+    "token_count_output": 168,
+    "cost": {
+      "input_tokens": 110,
+      "output_tokens": 168,
+      "model_cost_usd": 0.0031,
+      "evaluation_cost_usd": 0.0012,
+      "total_cost_usd": 0.0043
+    },
+    "metadata": {
+      "source": "devops_knowledge_base",
+      "user_tier": "enterprise"
+    }
+  },
+  {
+    "session_id": "demo-session-014",
+    "prompt": "What caused the production outage on April 15th?",
+    "response": "The production outage on April 15th was caused by a misconfigured database connection pool. The connection pool size was set to 10 but the application required 50+ concurrent connections during peak load, causing connection timeouts and cascading failures across all microservices. The root cause was a configuration change deployed the previous day that inadvertently reduced the pool size from 100 to 10.",
+    "model_used": "gpt-4o",
+    "context_documents": [
+      "Incident Report IR-2026-042: Production degradation observed starting 14:22 UTC on April 15th. Multiple services reported database connection timeouts."
+    ],
+    "latency_ms": 1380.0,
+    "latency_breakdown": {
+      "preprocessing_ms": 13.0,
+      "retrieval_ms": 175.0,
+      "generation_ms": 1120.0,
+      "evaluation_ms": 72.0
+    },
+    "token_count_input": 55,
+    "token_count_output": 102,
+    "cost": {
+      "input_tokens": 55,
+      "output_tokens": 102,
+      "model_cost_usd": 0.0018,
+      "evaluation_cost_usd": 0.0007,
+      "total_cost_usd": 0.0025
+    },
+    "metadata": {
+      "source": "incident_response",
+      "user_tier": "internal",
+      "expected_failure": true,
+      "failure_reason": "hallucinated specific root cause details (pool size numbers, config change) not in incident report"
+    }
+  },
+  {
+    "session_id": "demo-session-015",
+    "prompt": "Summarize this document in three bullet points.",
+    "response": "",
+    "model_used": "llama3.2",
+    "context_documents": [
+      "Artificial intelligence has transformed industries from healthcare to finance. Machine learning models can now diagnose diseases, predict market trends, and automate complex workflows. However, challenges remain in areas of bias, interpretability, and energy consumption."
+    ],
+    "latency_ms": 45.0,
+    "latency_breakdown": {
+      "preprocessing_ms": 3.0,
+      "retrieval_ms": 8.0,
+      "generation_ms": 30.0,
+      "evaluation_ms": 4.0
+    },
+    "token_count_input": 35,
+    "token_count_output": 0,
+    "cost": {
+      "input_tokens": 35,
+      "output_tokens": 0,
+      "model_cost_usd": 0.0,
+      "evaluation_cost_usd": 0.0,
+      "total_cost_usd": 0.0
+    },
+    "task_type": "preprocessing",
+    "complexity_score": 0.28,
+    "metadata": {
+      "source": "document_processing",
+      "user_tier": "free",
+      "expected_failure": true,
+      "failure_reason": "empty response from local model"
     }
   }
 ]

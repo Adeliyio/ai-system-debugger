@@ -12,6 +12,18 @@ from backend.services.evaluation import EvaluationService
 from backend.services.rca import RCAService
 from backend.services.healing import HealingService
 
+# Re-export for convenience
+__all__ = [
+    "get_db",
+    "get_cache_service",
+    "get_model_router",
+    "get_instrumentation_service",
+    "get_monitoring_service",
+    "get_evaluation_service",
+    "get_rca_service",
+    "get_healing_service",
+]
+
 # Singleton router instance (stateless, holds API clients)
 _model_router: ModelRouter | None = None
 

@@ -56,7 +56,7 @@ class TestInstrumentationService:
 
         service = InstrumentationService(mock_db)
         with pytest.raises(ValueError, match="not found"):
-            await service.get_trace("nonexistent-id")
+            await service.get_trace("00000000-0000-0000-0000-000000000000")
 
     @pytest.mark.asyncio
     async def test_update_trace_status(self, mock_db, sample_trace_record):
@@ -74,4 +74,6 @@ class TestInstrumentationService:
 
         service = InstrumentationService(mock_db)
         with pytest.raises(ValueError, match="not found"):
-            await service.update_trace_status("nonexistent", TraceStatus.failed)
+            await service.update_trace_status(
+                "00000000-0000-0000-0000-000000000000", TraceStatus.failed
+            )
