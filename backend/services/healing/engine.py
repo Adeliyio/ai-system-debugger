@@ -349,8 +349,28 @@ class RegressionTester:
 
 # --- LangGraph state ---
 
-class HealingState(dict):
-    pass
+from typing import TypedDict, Any, Annotated
+
+
+class HealingState(TypedDict, total=False):
+    """Typed state flowing through the LangGraph healing pipeline."""
+    trace: Any
+    rca: Any
+    strategy_override: Any
+    strategy: Any
+    similar_fixes: list
+    attempt: int
+    test_cases: list
+    original_failure_type: Any
+    repaired_response: str
+    repair_prompt: str
+    escalated_to_openai: bool
+    regression_results: list
+    regression_passed: bool
+    improvement_score: float
+    post_repair_failure_type: Any
+    post_repair_passed: bool
+    finalized: bool
 
 
 # --- Main Service ---
