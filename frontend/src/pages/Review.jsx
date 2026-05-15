@@ -16,7 +16,7 @@ export default function Review() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showResolved, setShowResolved] = useState(false);
+  const [showResolved, setShowResolved] = useState(true);
   const [recalibrating, setRecalibrating] = useState(false);
 
   const load = async () => {

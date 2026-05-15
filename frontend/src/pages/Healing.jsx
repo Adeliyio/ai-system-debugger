@@ -1,24 +1,54 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PageHeader from '../components/PageHeader';
 import StatusBadge from '../components/StatusBadge';
 import { api } from '../api';
 
 export default function Healing() {
+  const [failedTraces, setFailedTraces] = useState([]);
+  const [tracesLoading, setTracesLoading] = useState(true);
   const [traceId, setTraceId] = useState('');
   const [evaluationId, setEvaluationId] = useState('');
   const [rcaId, setRcaId] = useState('');
-  const [step, setStep] = useState('rca'); // rca -> heal -> compare
+  const [step, setStep] = useState('rca');
   const [rcaResult, setRcaResult] = useState(null);
   const [healingResult, setHealingResult] = useState(null);
   const [comparisonResult, setComparisonResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  useEffect(() => {
+    loadFailedTraces();
+  }, []);
+
+  const loadFailedTraces = async () => {
+    try {
+      const data = await api.listFailedTracesWithContext();
+      setFailedTraces(data);
+    } catch {
+      // Silently fail — the manual input still works
+    } finally {
+      setTracesLoading(false);
+    }
+  };
+
+  const selectTrace = (trace) => {
+    resetAll();
+    setTraceId(trace.id);
+    if (trace.evaluation_id) setEvaluationId(trace.evaluation_id);
+    if (trace.rca_id) setRcaId(trace.rca_id);
+  };
+
   const handleRCA = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     try {
+      // If RCA already exists from a previous run, skip to heal
+      if (rcaId) {
+        setStep('heal');
+        setLoading(false);
+        return;
+      }
       const result = await api.runRCA({ trace_id: traceId, evaluation_id: evaluationId });
       setRcaResult(result);
       setRcaId(result.id);
@@ -62,6 +92,9 @@ export default function Healing() {
 
   const resetAll = () => {
     setStep('rca');
+    setTraceId('');
+    setEvaluationId('');
+    setRcaId('');
     setRcaResult(null);
     setHealingResult(null);
     setComparisonResult(null);
@@ -78,6 +111,40 @@ export default function Healing() {
       {error && (
         <div className="bg-red-400/10 border border-red-400/20 rounded-xl p-4 mb-6">
           <p className="text-red-400 text-sm">{error}</p>
+        </div>
+      )}
+
+      {/* Failed traces quick-select */}
+      {failedTraces.length > 0 && step === 'rca' && (
+        <div className="mb-6">
+          <h3 className="text-sm font-medium text-gray-400 mb-3">Failed Traces (click to select)</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+            {failedTraces.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => selectTrace(t)}
+                className={`text-left bg-gray-900 border rounded-xl p-4 transition-colors hover:border-red-500 ${
+                  traceId === t.id ? 'border-red-500' : 'border-gray-800'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-mono text-gray-400">{t.session_id}</span>
+                  <StatusBadge status={t.status} />
+                </div>
+                <p className="text-sm text-gray-300 line-clamp-2 mb-2">{t.prompt}</p>
+                <div className="flex items-center gap-3 text-xs text-gray-500">
+                  <span>{t.model_used}</span>
+                  <span>{new Date(t.created_at).toLocaleTimeString()}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tracesLoading ? null : failedTraces.length === 0 && step === 'rca' && (
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6 text-center">
+          <p className="text-gray-500 text-sm">No failed traces found. All traces passed evaluation.</p>
         </div>
       )}
 
@@ -108,14 +175,14 @@ export default function Healing() {
       {step === 'rca' && (
         <form onSubmit={handleRCA} className="bg-gray-900 border border-gray-800 rounded-xl p-6">
           <h3 className="text-sm font-medium text-gray-300 mb-4">Identify Root Cause</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div>
               <label className="block text-xs text-gray-500 mb-1">Trace ID</label>
               <input
                 type="text"
                 value={traceId}
                 onChange={(e) => setTraceId(e.target.value)}
-                placeholder="Enter trace ID..."
+                placeholder="Enter trace ID or select above..."
                 className="w-full bg-gray-950 border border-gray-700 rounded-lg px-4 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-brand-500"
               />
             </div>
@@ -129,13 +196,23 @@ export default function Healing() {
                 className="w-full bg-gray-950 border border-gray-700 rounded-lg px-4 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-brand-500"
               />
             </div>
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">RCA ID (optional, skip RCA if set)</label>
+              <input
+                type="text"
+                value={rcaId}
+                onChange={(e) => setRcaId(e.target.value)}
+                placeholder="Auto-filled if available..."
+                className="w-full bg-gray-950 border border-gray-700 rounded-lg px-4 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-brand-500"
+              />
+            </div>
           </div>
           <button
             type="submit"
-            disabled={loading || !traceId || !evaluationId}
+            disabled={loading || !traceId || (!evaluationId && !rcaId)}
             className="px-5 py-2 bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
           >
-            {loading ? 'Analyzing...' : 'Run RCA'}
+            {loading ? 'Analyzing...' : rcaId ? 'Skip to Healing' : 'Run RCA'}
           </button>
         </form>
       )}
@@ -184,7 +261,6 @@ export default function Healing() {
               <StatusBadge status={healingResult.regression_passed ? 'passed' : 'not passed'} />
             </div>
           </div>
-
           <div className="grid grid-cols-3 gap-4 mb-4 text-sm">
             <div>
               <p className="text-gray-500">Strategy</p>
@@ -196,19 +272,15 @@ export default function Healing() {
             </div>
             <div>
               <p className="text-gray-500">Improvement</p>
-              <p className="text-gray-200 mt-1">
-                {(healingResult.improvement_score * 100).toFixed(1)}%
-              </p>
+              <p className="text-gray-200 mt-1">{(healingResult.improvement_score * 100).toFixed(1)}%</p>
             </div>
           </div>
-
           <div className="bg-gray-950 rounded-lg p-4 border border-gray-800">
             <p className="text-xs text-gray-500 mb-2">Repaired Response</p>
             <pre className="text-sm text-gray-200 whitespace-pre-wrap max-h-48 overflow-y-auto">
               {healingResult.repaired_response}
             </pre>
           </div>
-
           {step === 'compare' && !comparisonResult && (
             <button
               onClick={handleCompare}

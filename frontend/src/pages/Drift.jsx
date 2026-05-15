@@ -1,11 +1,28 @@
 import { useState, useEffect } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, ReferenceLine, Cell,
+  ResponsiveContainer, Cell,
 } from 'recharts';
 import { AlertTriangle, CheckCircle } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 import { api } from '../api';
+
+function formatMetricValue(metricName, value) {
+  if (metricName === 'mean_latency') {
+    return `${value.toFixed(1)} ms`;
+  }
+  return `${(value * 100).toFixed(2)}%`;
+}
+
+function chartValue(metricName, value) {
+  if (metricName === 'mean_latency') return value;
+  return value * 100;
+}
+
+function chartFormatter(metricName) {
+  if (metricName === 'mean_latency') return (v) => `${v.toFixed(0)} ms`;
+  return (v) => `${v.toFixed(2)}%`;
+}
 
 export default function Drift() {
   const [driftData, setDriftData] = useState([]);
@@ -43,9 +60,9 @@ export default function Drift() {
 
   const chartData = driftData.map((d) => ({
     name: d.metric_name.replace(/_/g, ' '),
-    current: d.current_value * 100,
-    baseline: d.baseline_value * 100,
-    drift: d.drift_magnitude * 100,
+    metric_name: d.metric_name,
+    current: chartValue(d.metric_name, d.current_value),
+    baseline: chartValue(d.metric_name, d.baseline_value),
     isDrifting: d.is_drifting,
   }));
 
@@ -95,13 +112,13 @@ export default function Drift() {
               <div>
                 <p className="text-gray-500 text-xs">Current</p>
                 <p className="text-gray-100 font-semibold">
-                  {(d.current_value * 100).toFixed(2)}%
+                  {formatMetricValue(d.metric_name, d.current_value)}
                 </p>
               </div>
               <div>
                 <p className="text-gray-500 text-xs">Baseline</p>
                 <p className="text-gray-100 font-semibold">
-                  {(d.baseline_value * 100).toFixed(2)}%
+                  {formatMetricValue(d.metric_name, d.baseline_value)}
                 </p>
               </div>
             </div>
@@ -110,7 +127,7 @@ export default function Drift() {
               <div className="flex items-center justify-between text-xs">
                 <span className="text-gray-500">Drift magnitude</span>
                 <span className={d.is_drifting ? 'text-red-400 font-medium' : 'text-gray-400'}>
-                  {(d.drift_magnitude * 100).toFixed(2)}%
+                  {formatMetricValue(d.metric_name, d.drift_magnitude)}
                 </span>
               </div>
             </div>
@@ -130,12 +147,15 @@ export default function Drift() {
               <XAxis dataKey="name" tick={{ fill: '#9ca3af', fontSize: 11 }} />
               <YAxis
                 tick={{ fill: '#9ca3af', fontSize: 11 }}
-                tickFormatter={(v) => `${v}%`}
               />
               <Tooltip
                 contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '0.5rem' }}
                 itemStyle={{ color: '#e5e7eb' }}
-                formatter={(value) => `${value.toFixed(2)}%`}
+                formatter={(value, name, props) => {
+                  const mn = props.payload.metric_name;
+                  if (mn === 'mean_latency') return `${value.toFixed(1)} ms`;
+                  return `${value.toFixed(2)}%`;
+                }}
               />
               <Bar dataKey="baseline" name="Baseline" fill="#6b7280" radius={[4, 4, 0, 0]} />
               <Bar dataKey="current" name="Current" radius={[4, 4, 0, 0]}>

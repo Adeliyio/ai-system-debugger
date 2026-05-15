@@ -23,23 +23,23 @@ def upgrade() -> None:
     # --- Enum types ---
     trace_status = postgresql.ENUM(
         "pending", "analyzed", "failed", "healed",
-        name="trace_status", create_type=True,
+        name="trace_status", create_type=False,
     )
     severity_level = postgresql.ENUM(
         "low", "medium", "high", "critical",
-        name="severity_level", create_type=True,
+        name="severity_level", create_type=False,
     )
     failure_source = postgresql.ENUM(
         "retrieval", "prompt", "model", "context", "unknown",
-        name="failure_source", create_type=True,
+        name="failure_source", create_type=False,
     )
     healing_strategy = postgresql.ENUM(
         "prompt_repair", "retrieval_correction", "model_reroute", "context_enrichment",
-        name="healing_strategy", create_type=True,
+        name="healing_strategy", create_type=False,
     )
     evaluator_type = postgresql.ENUM(
         "llm_judge", "embedding_similarity", "rule_based",
-        name="evaluator_type", create_type=True,
+        name="evaluator_type", create_type=False,
     )
 
     # Create enums

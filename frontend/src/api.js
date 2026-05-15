@@ -18,6 +18,11 @@ export const api = {
   // Traces
   submitTrace: (data) => request('/trace', { method: 'POST', body: JSON.stringify(data) }),
   getTrace: (id) => request(`/trace/${id}`),
+  listTraces: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/traces${query ? `?${query}` : ''}`);
+  },
+  listFailedTracesWithContext: () => request('/traces/failed-with-context'),
 
   // Analysis
   analyzeTrace: (data) => request('/analyze', { method: 'POST', body: JSON.stringify(data) }),

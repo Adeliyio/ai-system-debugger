@@ -31,7 +31,7 @@ export default function Sidebar() {
         <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-sm">
           AI
         </div>
-        <span className="font-semibold text-sm text-gray-100">System Debugger</span>
+        <span className="font-semibold text-sm text-gray-100">Tommy's System Debugger</span>
       </div>
 
       <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
